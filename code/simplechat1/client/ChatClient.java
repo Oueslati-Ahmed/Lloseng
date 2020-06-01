@@ -68,7 +68,49 @@ public class ChatClient extends AbstractClient
   {
     try
     {
-      sendToServer(message);
+      if (message.charAt(0)=='#') {
+        if (message.equals("#quit")) {
+          System.out.println("Quitting..");  
+          quit();
+        }
+        if (message.equals("#logoff")) {
+          closeConnection();
+          System.out.println("Logged off");
+        }
+        if (message.startsWith("#sethost")) {
+          if (isConnected()) {
+            System.out.println("Error, cant change host while connected");
+          } else {
+            String[] new_host = message.split(" "); 
+            setHost(new_host[1]);
+            System.out.println("Host change to "+ getHost());
+          }
+        }
+        if (message.startsWith("#setport")) {
+          if (isConnected()) {
+            System.out.println("Error, cant change port while connected");
+          } else {
+            String[] new_port = message.split(" "); 
+            setPort(Integer.parseInt(new_port[1]));
+            System.out.println("Port change to "+ getPort());
+          }
+        }
+        if (message.startsWith("#login")){
+          if (isConnected()) {
+            System.out.println("Error, client is already connected");
+          } else {
+            openConnection();
+          }
+        } 
+        if (message.startsWith("#gethost")){
+          System.out.println("Host is "+getHost());
+        }
+        if (message.startsWith("#getport")) {
+          System.out.println("Port is "+getPort());
+        }
+      } else {
+        sendToServer(message);
+      }
     }
     catch(IOException e)
     {

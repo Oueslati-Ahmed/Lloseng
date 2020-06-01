@@ -98,7 +98,10 @@ public class EchoServer extends AbstractServer
     
     try 
     {
-      sv.listen(); //Start listening for connections
+      sv.listen();
+      
+      ServerConsole chat= new ServerConsole(port);
+      chat.accept();
     } 
     catch (Exception ex) 
     {
