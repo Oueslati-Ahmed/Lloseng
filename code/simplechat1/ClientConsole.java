@@ -94,6 +94,7 @@ public class ClientConsole implements ChatIF
     System.out.println("> " + message);
   }
 
+
   
   //Class methods ***************************************************
   
