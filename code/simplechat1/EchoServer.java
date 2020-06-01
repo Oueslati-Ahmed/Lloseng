@@ -108,7 +108,13 @@ public class EchoServer extends AbstractServer
 
 
   public void clientConnected(ConnectionToClient client) {
-    System.out.println("Someone has joined the chat!");
+    System.out.println("Client Connected");
   }
+
+
+  public synchronized void clientException(
+    ConnectionToClient client, Throwable exception) {
+      System.out.println("Client disconnected");
+    }
 }
 //End of EchoServer class
