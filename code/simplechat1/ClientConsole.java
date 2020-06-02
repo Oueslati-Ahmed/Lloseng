@@ -41,11 +41,12 @@ public class ClientConsole implements ChatIF
    * @param host The host to connect to.
    * @param port The port to connect on.
    */
-  public ClientConsole(String host, int port) 
+  public ClientConsole(String host, int port, String id) 
   {
     try 
     {
       client= new ChatClient(host, port, this);
+      client.setId(id);
     } 
     catch(IOException exception) 
     {
@@ -69,7 +70,7 @@ public class ClientConsole implements ChatIF
       BufferedReader fromConsole = 
         new BufferedReader(new InputStreamReader(System.in));
       String message;
-
+      client.sendToServer(client.getId()+"@"+"#login");
       while (true) 
       {
         message = fromConsole.readLine();
@@ -106,20 +107,40 @@ public class ClientConsole implements ChatIF
   public static void main(String[] args) 
   {
     String host = "";
+    String id="";
     int port = 0;  //The port number
 
     try
     {
+<<<<<<< HEAD
       host = args[0];
       port = Integer.parseInt(args[1]);
 
+=======
+      port = Integer.parseInt(args[2]);
+>>>>>>> OcsfPhase2
     }
     catch(ArrayIndexOutOfBoundsException e)
     {
+      port = DEFAULT_PORT;
+    }
+    try{
+      host = args[1];
+    }catch(ArrayIndexOutOfBoundsException e){
       host = "localhost";
       port = DEFAULT_PORT;
     }
+<<<<<<< HEAD
     ClientConsole chat= new ClientConsole(host, port);
+=======
+    try {
+      id = args[0];
+    } catch (ArrayIndexOutOfBoundsException e) {
+      System.out.println("user ID not provided, terminating client.");
+      System.exit(0);
+    }
+    ClientConsole chat= new ClientConsole(host, port,id);
+>>>>>>> OcsfPhase2
     chat.accept();  //Wait for console data
   }
 }

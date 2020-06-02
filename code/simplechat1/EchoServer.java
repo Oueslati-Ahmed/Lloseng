@@ -3,6 +3,9 @@
 // license found at www.lloseng.com 
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.Objects;
+
 import ocsf.server.*;
 
 /**
@@ -18,11 +21,14 @@ import ocsf.server.*;
 public class EchoServer extends AbstractServer 
 {
   //Class variables *************************************************
-  
+  private boolean is_closed=false;
   /**
    * The default port to listen on.
    */
   final public static int DEFAULT_PORT = 5555;
+  private int max_users = 10;
+  Object[][] clients = new Object[max_users][2];
+  int user_index = 0;
   
   //Constructors ****************************************************
   
@@ -46,12 +52,42 @@ public class EchoServer extends AbstractServer
    * @param client The connection from which the message originated.
    */
   public void handleMessageFromClient
-    (Object msg, ConnectionToClient client)
-  {
-    System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
-  }
+    (Object msg, ConnectionToClient client){
+    String[] array_msg = Objects.toString(msg).split("@");
+    String id = array_msg[0];
+    String message = array_msg[1];
+    if (message.startsWith("#login")) {
+      if (userIsLogged(client)) {
+        System.out.println("Already logged in");
+      }else{
+        setInfo(client, id);
+      }
+    }
+    else{
+      if (userIsLogged(client)) {
+        System.out.println(id+" > "+message);
+        this.sendToAllClients(id+" > "+message);
+      }
+    }
+    }
     
+  public void setInfo(ConnectionToClient client, String id){
+      this.clients[user_index][0]=client;
+      this.clients[user_index][1]=id;
+      this.user_index++;
+      System.out.println("#login "+id);
+    }
+
+  public boolean userIsLogged(ConnectionToClient client){
+    boolean flag = false;
+    for (int i = 0; i < clients.length; i++) {
+      if (clients[i][0]==(client)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   /**
    * This method overrides the one in the superclass.  Called
    * when the server starts listening for connections.
@@ -60,6 +96,7 @@ public class EchoServer extends AbstractServer
   {
     System.out.println
       ("Server listening for connections on port " + getPort());
+    is_closed=false;
   }
   
   /**
@@ -70,6 +107,7 @@ public class EchoServer extends AbstractServer
   {
     System.out.println
       ("Server has stopped listening for connections.");
+    is_closed=true;
   }
   
   //Class methods ***************************************************
@@ -98,7 +136,10 @@ public class EchoServer extends AbstractServer
     
     try 
     {
-      sv.listen(); //Start listening for connections
+      sv.listen();
+      
+      ServerConsole chat= new ServerConsole(sv,port);
+      chat.accept();
     } 
     catch (Exception ex) 
     {
@@ -106,7 +147,10 @@ public class EchoServer extends AbstractServer
     }
   }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> OcsfPhase2
   public void clientConnected(ConnectionToClient client) {
     System.out.println("Client Connected");
   }
@@ -114,7 +158,28 @@ public class EchoServer extends AbstractServer
 
   public synchronized void clientException(
     ConnectionToClient client, Throwable exception) {
+<<<<<<< HEAD
       System.out.println("Client disconnected");
     }
+=======
+    System.out.println("Client disconnected");
+  }
+
+  public void serverClosed(){
+    is_closed=true;
+    sendToAllClients("WARNING - Server has stopped listening for connections.");
+  }
+
+
+  public void setOpen(){
+    this.is_closed=false;
+  }
+
+  public boolean isClosed(){
+    return this.is_closed;
+  }
+
+  
+>>>>>>> OcsfPhase2
 }
 //End of EchoServer class
