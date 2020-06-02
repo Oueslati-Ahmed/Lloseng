@@ -7,6 +7,7 @@ package client;
 import ocsf.client.*;
 import common.*;
 import java.io.*;
+import java.util.Set;
 
 /**
  * This class overrides some of the methods defined in the abstract
@@ -26,6 +27,8 @@ public class ChatClient extends AbstractClient
    * the display method in the client.
    */
   ChatIF clientUI; 
+  private String user_id=null;
+  private boolean initialized=false;
 
   
   //Constructors ****************************************************
@@ -42,6 +45,7 @@ public class ChatClient extends AbstractClient
     throws IOException 
   {
     super(host, port); //Call the superclass constructor
+    this.initialized=true;
     this.clientUI = clientUI;
     openConnection();
   }
@@ -56,7 +60,7 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromServer(Object msg) 
   {
-    clientUI.display(msg.toString());
+    clientUI.display( msg.toString());
   }
 
   /**
@@ -68,16 +72,16 @@ public class ChatClient extends AbstractClient
   {
     try
     {
-      if (message.charAt(0)=='#') {
+      
         if (message.equals("#quit")) {
           System.out.println("Quitting..");  
           quit();
         }
-        if (message.equals("#logoff")) {
+        else if (message.equals("#logoff")) {
           closeConnection();
           System.out.println("Logged off");
         }
-        if (message.startsWith("#sethost")) {
+        else if (message.startsWith("#sethost")) {
           if (isConnected()) {
             System.out.println("Error, cant change host while connected");
           } else {
@@ -86,7 +90,7 @@ public class ChatClient extends AbstractClient
             System.out.println("Host change to "+ getHost());
           }
         }
-        if (message.startsWith("#setport")) {
+        else if (message.startsWith("#setport")) {
           if (isConnected()) {
             System.out.println("Error, cant change port while connected");
           } else {
@@ -95,22 +99,24 @@ public class ChatClient extends AbstractClient
             System.out.println("Port change to "+ getPort());
           }
         }
-        if (message.startsWith("#login")){
+        else if (message.startsWith("#login")){
           if (isConnected()) {
             System.out.println("Error, client is already connected");
           } else {
             openConnection();
           }
         } 
-        if (message.startsWith("#gethost")){
+        else if (message.startsWith("#gethost")){
           System.out.println("Host is "+getHost());
         }
-        if (message.startsWith("#getport")) {
+        else if (message.startsWith("#getport")) {
           System.out.println("Port is "+getPort());
         }
-      } else {
-        sendToServer(message);
-      }
+      
+        else{
+          sendToServer(this.user_id+"@"+message);
+        }
+      
     }
     catch(IOException e)
     {
@@ -132,5 +138,24 @@ public class ChatClient extends AbstractClient
     catch(IOException e) {}
     System.exit(0);
   }
+
+
+public void connectionException(Exception exception) {
+  System.out.println("Error, server has shut down");
+  System.out.println("Quitting..");
+  quit();
 }
+
+
+public String getId(){
+  return this.user_id;
+}
+
+public void setId(String id){
+  this.user_id=id;
+  return;
+}
+}
+
+
 //End of ChatClient class
