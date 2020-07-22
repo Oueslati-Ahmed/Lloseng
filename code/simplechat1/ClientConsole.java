@@ -95,7 +95,6 @@ public class ClientConsole implements ChatIF
     System.out.println("> " + message);
   }
 
-
   
   //Class methods ***************************************************
   
@@ -112,13 +111,7 @@ public class ClientConsole implements ChatIF
 
     try
     {
-<<<<<<< HEAD
-      host = args[0];
-      port = Integer.parseInt(args[1]);
-
-=======
       port = Integer.parseInt(args[2]);
->>>>>>> OcsfPhase2
     }
     catch(ArrayIndexOutOfBoundsException e)
     {
@@ -128,11 +121,7 @@ public class ClientConsole implements ChatIF
       host = args[1];
     }catch(ArrayIndexOutOfBoundsException e){
       host = "localhost";
-      port = DEFAULT_PORT;
     }
-<<<<<<< HEAD
-    ClientConsole chat= new ClientConsole(host, port);
-=======
     try {
       id = args[0];
     } catch (ArrayIndexOutOfBoundsException e) {
@@ -140,7 +129,6 @@ public class ClientConsole implements ChatIF
       System.exit(0);
     }
     ClientConsole chat= new ClientConsole(host, port,id);
->>>>>>> OcsfPhase2
     chat.accept();  //Wait for console data
   }
 }
