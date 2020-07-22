@@ -20,6 +20,14 @@ import ocsf.server.*;
  */
 public class EchoServer extends AbstractServer 
 {
+
+  static class Message extends Thread {
+
+    public void run() {
+       log.deleteFile();
+    }
+ }
+
   //Class variables *************************************************
   private boolean is_closed=false;
   /**
@@ -29,6 +37,7 @@ public class EchoServer extends AbstractServer
   private int max_users = 10;
   Object[][] clients = new Object[max_users][2];
   int user_index = 0;
+  private static Log log;
   
   //Constructors ****************************************************
   
@@ -51,8 +60,7 @@ public class EchoServer extends AbstractServer
    * @param msg The message received from the client.
    * @param client The connection from which the message originated.
    */
-  public void handleMessageFromClient
-    (Object msg, ConnectionToClient client){
+  public void handleMessageFromClient(Object msg, ConnectionToClient client) {
     String[] array_msg = Objects.toString(msg).split("@");
     String id = array_msg[0];
     String message = array_msg[1];
@@ -65,8 +73,20 @@ public class EchoServer extends AbstractServer
     }
     else{
       if (userIsLogged(client)) {
-        System.out.println(id+" > "+message);
-        this.sendToAllClients(id+" > "+message);
+        try {
+          if (message.startsWith("#save")) {
+            //this.sendToAllClients(getLog());
+            Log.saveLog();
+          }
+          else{
+            String tmp_msg = id+" > "+message;
+            System.out.println(tmp_msg);
+            this.sendToAllClients(tmp_msg);
+            Log.writeLog(tmp_msg);
+          }
+        } catch (IOException e) {
+          System.out.println("something wrong");
+        }
       }
     }
     }
@@ -108,6 +128,7 @@ public class EchoServer extends AbstractServer
     System.out.println
       ("Server has stopped listening for connections.");
     is_closed=true;
+    log.deleteFile();
   }
   
   //Class methods ***************************************************
@@ -119,7 +140,7 @@ public class EchoServer extends AbstractServer
    * @param args[0] The port number to listen on.  Defaults to 5555 
    *          if no argument is entered.
    */
-  public static void main(String[] args) 
+  public static void main(String[] args) throws IOException,InterruptedException
   {
     int port = 0; //Port to listen on
 
@@ -131,8 +152,10 @@ public class EchoServer extends AbstractServer
     {
       port = DEFAULT_PORT; //Set port to 5555
     }
-	
+    
+    Runtime.getRuntime().addShutdownHook(new Message());
     EchoServer sv = new EchoServer(port);
+    log = new Log();
     
     try 
     {
@@ -147,10 +170,6 @@ public class EchoServer extends AbstractServer
     }
   }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> OcsfPhase2
   public void clientConnected(ConnectionToClient client) {
     System.out.println("Client Connected");
   }
@@ -158,15 +177,12 @@ public class EchoServer extends AbstractServer
 
   public synchronized void clientException(
     ConnectionToClient client, Throwable exception) {
-<<<<<<< HEAD
-      System.out.println("Client disconnected");
-    }
-=======
     System.out.println("Client disconnected");
   }
 
   public void serverClosed(){
     is_closed=true;
+    log.deleteFile();
     sendToAllClients("WARNING - Server has stopped listening for connections.");
   }
 
@@ -179,7 +195,13 @@ public class EchoServer extends AbstractServer
     return this.is_closed;
   }
 
-  
->>>>>>> OcsfPhase2
+  public Log getLog(){
+    return log;
+  }
+
+
+  public void sendPrivateMessage(String message){
+    sendToAllClients(message);
+  }
 }
 //End of EchoServer class
