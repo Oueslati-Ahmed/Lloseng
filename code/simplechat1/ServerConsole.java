@@ -17,18 +17,16 @@ public class ServerConsole implements ChatIF {
         try
         {
           if (message.charAt(0)=='#') {
-            /* if (message.equals("#quit")) {
-              System.out.println("Quitting..");  
-              quit(); */
-            //}
+            if (message.equals("#save")) {
+              Log.saveLog();
+          }
             if (message.equals("#stop")) {
                 System.out.println("Stopping..");
                 server.stopListening();
                 server.serverClosed();
             }
             if (message.equals("#quit")) {
-                System.out.println("Quitting..");
-                System.exit(0);
+                quit();
             }
             if (message.equals("#close")) {
                 server.close();
@@ -55,12 +53,25 @@ public class ServerConsole implements ChatIF {
               System.out.println("Port is "+server.getPort());
             } 
           }
-        else server.sendToAllClients("SERVER MSG > " +message);
+        else{
+          if (message.startsWith("@@@")) {
+            /* String[] tmp = message.split(":");
+            String id = tmp[0].substring(3);
+            String msg = tmp[1]; */
+            server.sendPrivateMessage(message);
+          } else {
+             String tmp_msg = "SERVER MSG > " +message;
+             server.sendToAllClients(tmp_msg);    
+             Log.writeLog(tmp_msg);
+          }
+          
+        }
           
         }
         catch(IOException e)
         {
           System.out.println("Could not send message to server.  Terminating client.");
+          quit();
         }
       }
 
@@ -87,11 +98,18 @@ public class ServerConsole implements ChatIF {
 
   }
 
-    public void display(String message) 
-    {
-        System.out.println("> " + message);
+    public void quit(){
+      System.out.println("Quitting..");
+      server.getLog().deleteFile();
+      System.exit(0);
     }
 
+    public void display(String message)
+    {
+        String tmp_msg=">x " + message;
+        System.out.println(tmp_msg);
+        //Log.writeLog(tmp_msg);
+    }
 
     
 }
