@@ -6,8 +6,10 @@ package client;
 
 import ocsf.client.*;
 import common.*;
+
 import java.io.*;
 import java.util.Set;
+
 
 /**
  * This class overrides some of the methods defined in the abstract
@@ -60,7 +62,11 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromServer(Object msg) 
   {
-    clientUI.display( msg.toString());
+    if (msg.toString().startsWith("@@@")) {
+      handlePrivateMsg(msg.toString());
+    } else {
+      clientUI.display( msg.toString());
+    }
   }
 
   /**
@@ -111,8 +117,10 @@ public class ChatClient extends AbstractClient
         }
         else if (message.startsWith("#getport")) {
           System.out.println("Port is "+getPort());
+          
         }
-      
+
+        
         else{
           sendToServer(this.user_id+"@"+message);
         }
@@ -139,13 +147,6 @@ public class ChatClient extends AbstractClient
     System.exit(0);
   }
 
-<<<<<<< HEAD
-  public void connectionException(Exception exception) {
-    System.out.println("Error, server has shut down");
-    System.out.println("Quitting..");
-    quit();
-	}
-=======
 
 public void connectionException(Exception exception) {
   System.out.println("Error, server has shut down");
@@ -156,12 +157,22 @@ public void connectionException(Exception exception) {
 
 public String getId(){
   return this.user_id;
->>>>>>> OcsfPhase2
 }
 
 public void setId(String id){
   this.user_id=id;
   return;
+}
+
+public void handlePrivateMsg(String message){
+  String[] tmp = message.split(":");
+  String id = tmp[0].substring(3).strip();
+  String msg = tmp[1];
+  //String[] idd = id.spli;
+  if (id.compareTo(this.getId())==0) {
+    System.out.println("true");
+    clientUI.display( "####PRIVATE SERVER MESSAGE#### " + msg);
+  }
 }
 }
 
