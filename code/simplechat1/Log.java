@@ -1,3 +1,7 @@
+/* Managing logs
+Author: Oueslati Ahmed */
+
+
 import java.text.SimpleDateFormat;  
 import java.util.Date;  
 import java.io.File;
