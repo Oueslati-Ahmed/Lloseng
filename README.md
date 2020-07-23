@@ -20,7 +20,7 @@ Professors may obtain solutions to exercises including code by contacting the au
 
 * Added logs recording to make a transcript of the current conversation, simply type `#save` and a log#timestamp.txt file will be saved to the current dir
 
-* Logs are automatically deleted (if not saved by typing `save`) when the server shuts down
+* Logs are automatically deleted (if not saved by typing `#save`) when the server shuts down
 
 * Server can now send private messages by typing `@@@id:message` where id is the user's id and the message is the message to send, the user will get the message in the format of `####PRIVATE SERVER MESSAGE#### message` , private messages are not recorded in logs
 
