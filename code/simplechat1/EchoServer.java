@@ -22,7 +22,7 @@ public class EchoServer extends AbstractServer
 {
 
   static class Message extends Thread {
-
+    /* Executes when server suddenly shuts down (alt-f4 or ^C) */
     public void run() {
        log.deleteFile();
     }
@@ -157,7 +157,7 @@ public class EchoServer extends AbstractServer
     {
       port = DEFAULT_PORT; //Set port to 5555
     }
-    
+    //in case the server is suddenly terminated, deletes logs
     Runtime.getRuntime().addShutdownHook(new Message());
     EchoServer sv = new EchoServer(port);
     log = new Log();
