@@ -29,6 +29,7 @@ Learned a bit about java native and wrote this code*/
     try
       {
         if (!file.isHidden()) {
+          //this is the same as creating a batch file with the command in it and running it in the current dir
           String command = "attrib +H "+getName();
           Runtime rt = Runtime.getRuntime();
           Process proc = rt.exec(command); 
