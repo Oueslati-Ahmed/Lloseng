@@ -74,13 +74,13 @@ public class EchoServer extends AbstractServer
     else{
       if (userIsLogged(client)) {
         try {
-          if (message.startsWith("#save")) { //if user wants to save logs
-            Log.saveLog();
+          if (message.contains("#save")) { //if user wants to save logs
+            sendPrivateMessage(id, Log.saveLog());
           }
-          if (message.startsWith("#list")) { //if user wants a list of online users
+          else if (message.startsWith("#list")) { //if user wants a list of online users
             sendOnlineUsers(id);
           }
-          if (message.startsWith("$")) { //if user sends private message
+          else if (message.startsWith("$")) { //if user sends private message
             sendPrivateMessageFrom(id, message.substring(1));
           }
           else{
@@ -228,7 +228,7 @@ public class EchoServer extends AbstractServer
     return users;
   }
 
-
+/* Sends online users to @id */
   public void sendOnlineUsers(String id){
     String msg = "List of online users: "+System.lineSeparator()+getOnlineUsers();
     sendPrivateMessage(id, msg);

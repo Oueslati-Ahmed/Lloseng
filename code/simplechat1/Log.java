@@ -83,10 +83,10 @@ Learned a bit about java native and wrote this code*/
   }
 
   /* Makes the log file visible and prevents deletion when server disconnects */
-  public static void saveLog(){
+  public static String saveLog(){
     changeFileVisibility(file);
     logSaved=true;
-    System.out.println("Logs saved under "+Log.getName());
+    return "Logs saved under "+Log.getName();
   }
 
   /* Clears all logs in the current folder that are not hidden (not saved) */
@@ -114,11 +114,15 @@ Learned a bit about java native and wrote this code*/
 
   public static void writeLog(String message) throws IOException{
     try {
-      changeFileVisibility(file);
+      if (!logSaved) {
+        changeFileVisibility(file);
+      }
       FileWriter fw = new FileWriter(file.getName(),true);
       fw.write(message+System.lineSeparator());
       fw.close();
-      changeFileVisibility(file);
+      if (!logSaved) {
+        changeFileVisibility(file);
+      }
     }catch (Exception e) {
       System.out.println("smthng wrong while writing to logs");
     }
