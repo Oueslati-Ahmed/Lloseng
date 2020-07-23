@@ -52,6 +52,10 @@ public class ServerConsole implements ChatIF {
             if (message.startsWith("#getport")) {
               System.out.println("Port is "+server.getPort());
             } 
+            if (message.startsWith("#list")) {
+              System.out.println("List of online users: "+System.lineSeparator()+server.getOnlineUsers());
+            } 
+            
           }
         else{
           if (message.startsWith("@@@")) {

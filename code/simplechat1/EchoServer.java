@@ -74,9 +74,14 @@ public class EchoServer extends AbstractServer
     else{
       if (userIsLogged(client)) {
         try {
-          if (message.startsWith("#save")) {
-            //this.sendToAllClients(getLog());
+          if (message.startsWith("#save")) { //if user wants to save logs
             Log.saveLog();
+          }
+          if (message.startsWith("#list")) { //if user wants a list of online users
+            sendOnlineUsers(id);
+          }
+          if (message.startsWith("$")) { //if user sends private message
+            sendPrivateMessageFrom(id, message.substring(1));
           }
           else{
             String tmp_msg = id+" > "+message;
@@ -199,9 +204,34 @@ public class EchoServer extends AbstractServer
     return log;
   }
 
-
+/* Handles private messages in the format of @@@id:message */
   public void sendPrivateMessage(String message){
     sendToAllClients(message);
+  }
+
+/* Takes the id and message as args and sends them in the @@@id:msg format */
+  public void sendPrivateMessage(String id, String message){
+    String msg = "@@@"+id+":"+message;
+    sendToAllClients(msg);
+  }
+
+  public void sendPrivateMessageFrom(String from, String message){
+    String msg = "$"+from+"@"+message;
+    sendToAllClients(msg);
+  }
+
+  public String getOnlineUsers(){
+    String users="";
+    for (int i = 0; i < user_index; i++) {
+      users += clients[i][1]+System.lineSeparator();
+    }
+    return users;
+  }
+
+
+  public void sendOnlineUsers(String id){
+    String msg = "List of online users: "+System.lineSeparator()+getOnlineUsers();
+    sendPrivateMessage(id, msg);
   }
 }
 //End of EchoServer class

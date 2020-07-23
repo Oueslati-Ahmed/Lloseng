@@ -62,8 +62,11 @@ public class ChatClient extends AbstractClient
    */
   public void handleMessageFromServer(Object msg) 
   {
+    //the @@@ prefix means that this is a private message from serv
     if (msg.toString().startsWith("@@@")) {
-      handlePrivateMsg(msg.toString());
+      handlePrivateServerMsg(msg.toString());
+    } else if (msg.toString().startsWith("$")) { //private msg from another user
+      handlePrivateUserMsg(msg.toString().substring(1));
     } else {
       clientUI.display( msg.toString());
     }
@@ -78,7 +81,6 @@ public class ChatClient extends AbstractClient
   {
     try
     {
-      
         if (message.equals("#quit")) {
           System.out.println("Quitting..");  
           quit();
@@ -164,15 +166,34 @@ public void setId(String id){
   return;
 }
 
-public void handlePrivateMsg(String message){
-  String[] tmp = message.split(":");
-  String id = tmp[0].substring(3).strip();
-  String msg = tmp[1];
-  //String[] idd = id.spli;
-  if (id.compareTo(this.getId())==0) {
-    System.out.println("true");
+/* Displays private srvr message to the appropriate user
+this function is obviously not secure and there are many ways around it */
+
+public void handlePrivateServerMsg(String message){
+  //some bad string manipulation
+  String id = message.substring(3, message.indexOf(":"));
+  if (verifyID(id)) {   //if the user id matches the msgs's id 
+    String msg = message.substring(message.indexOf(":")+1);
     clientUI.display( "####PRIVATE SERVER MESSAGE#### " + msg);
   }
+}
+
+
+/* Handles private messages in the format of from_id@to_id:message */
+public boolean handlePrivateUserMsg(String message){
+  //more bad string manipulation
+  String from = message.substring(1, message.indexOf("@"));
+  String to = message.substring(message.indexOf("@")+1,message.indexOf(":"));
+  if (verifyID(to)) {   //if the user id matches the recvr's id
+    String msg = message.substring(message.indexOf(":")+1);
+    clientUI.display("#Private msg from "+from+" # " +msg);
+    return true; //if msg is sent 
+  }
+  return false; //if user doesnt exist
+}
+
+public boolean verifyID(String id){
+  return id.compareTo(this.getId())==0;
 }
 }
 
