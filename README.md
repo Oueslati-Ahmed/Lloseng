@@ -22,10 +22,10 @@ Professors may obtain solutions to exercises including code by contacting the au
 
 * Logs are automatically deleted (if not saved by typing `save`) when the server shuts down
 
-* Server can now send private messages by typing `@@@id:message` where id is the user's id and the message is the message to send, the user will get the message in the format of `####PRIVATE SERVER MESSAGE#### message`
+* Server can now send private messages by typing `@@@id:message` where id is the user's id and the message is the message to send, the user will get the message in the format of `####PRIVATE SERVER MESSAGE#### message` , private messages are not recorded in logs
 
 * Clients can also send private messages to eachother by typing `$id:message` , the receipient will receive the message in the format of 
-`#Private msg from sender_id # " message` 
+`#Private msg from sender_id # " message` , private messages are not recorded in logs
 
 * From the server console type `#list` to get a list of online connected clients
 
